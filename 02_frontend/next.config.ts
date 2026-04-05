@@ -6,6 +6,7 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_HOST: API_HOST,
   },
+  images: { domains: ["your-api-domain.com"] }
 };
 
 export default nextConfig;

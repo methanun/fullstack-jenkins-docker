@@ -1,11 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
+
+// 1. กำหนด type ของข้อมูล
+interface Attraction {
+  id: number;
+  name: string;
+  detail?: string;
+  coverimage?: string;
+  latitude: number;
+  longitude: number;
+}
 
 export default function Page() {
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<Attraction[]>([]); // 2. ระบุ generic type
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function getAttractions() {
@@ -13,10 +24,10 @@ export default function Page() {
         const apiHost = process.env.NEXT_PUBLIC_API_HOST;
         const res = await fetch(`${apiHost}/attractions`, { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
+        const data: Attraction[] = await res.json();
         setRows(data);
       } catch (err) {
-        setError(err.message);
+        setError(err instanceof Error ? err.message : String(err)); // 3. แก้ setError ซ้อนกัน
       } finally {
         setLoading(false);
       }
@@ -48,7 +59,7 @@ export default function Page() {
         <p className="subtitle">Discover points of interest nearby</p>
       </header>
 
-      {!rows || rows.length === 0 ? (
+      {rows.length === 0 ? (
         <div className="empty">No attractions found.</div>
       ) : (
         <section className="grid" aria-live="polite">
@@ -56,13 +67,16 @@ export default function Page() {
             <article key={x.id} className="card" tabIndex={0}>
               {x.coverimage && (
                 <div className="media">
-                  <img
-                    src={x.coverimage}
-                    alt={x.name}
-                    className="img"
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  {/* 4. ใช้ fill + position relative แทนการระบุ width/height */}
+                  <div style={{ position: "relative", width: "100%", height: "200px" }}>
+                    <img
+                      src={x.coverimage}
+                      alt={x.name}
+                      className="img"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
                 </div>
               )}
               <div className="body">
