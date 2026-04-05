@@ -56,6 +56,7 @@ export default function Page() {
     <main className="container">
       <header className="header">
         <h1 className="title">Attractions</h1>
+        <h3 className="title">Methanun Nampundung</h3>
         <p className="subtitle">Discover points of interest nearby</p>
       </header>
 
